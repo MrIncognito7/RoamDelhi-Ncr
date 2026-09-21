@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Secrets (API keys, passwords)
+.env
+*.env
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Local caches and generated files
+cache/
+spots_cache.json
+map.html
