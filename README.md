@@ -216,3 +216,27 @@ final places = jsonDecode(res.body) as List;
   back to live search (hybrid mode)
 - Login (`/register`, `/login`) and premium-gated spots
 - Caching to speed up repeat requests
+
+## Login / Register API
+
+Setup (one time):
+
+```bash
+cp .env.example .env
+python3 -c "import secrets; print(secrets.token_hex(32))"   # paste the output as SECRET_KEY in .env
+python3 -m pip install -r requirements.txt
+```
+
+The server refuses to start without `SECRET_KEY`. `.env` and `roam.db` are gitignored, never commit them.
+
+| Method | Path | Body | Returns |
+|--------|------|------|---------|
+| POST | `/register` | `{name, email, password}` (password 8-72 chars) | `201` + `{access_token, token_type, user}` |
+| POST | `/login` | `{email, password}` | `200` + `{access_token, token_type, user}` |
+| GET | `/me` | header `Authorization: Bearer <token>` | `{id, name, email}` |
+
+Errors: `400` email already registered, `401` wrong credentials / bad or expired token, `422` validation (bad email, short password).
+Tokens last 7 days. To protect any future route, add `current_user: User = Depends(get_current_user)` (from `routers/auth.py`).
+
+Run the tests with `python3 -m pytest`.
+

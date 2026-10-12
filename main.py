@@ -4,9 +4,18 @@ default_mode = mode[0]
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import spots
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="RoamDelhiNCR API")
+from database import init_db
+from routers import spots, auth
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()  # creates the users table on first run
+    yield
+
+
+app = FastAPI(title="RoamDelhiNCR API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,6 +25,7 @@ app.add_middleware(
 )
 
 app.include_router(spots.router)
+app.include_router(auth.router)
 
 
 @app.get("/")

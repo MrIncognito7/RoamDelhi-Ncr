@@ -15,11 +15,11 @@ geopy
 pandas
 openpyxl
 
-# --- Login / auth (add once you start that part) ---
+# --- Login / auth ---
 sqlalchemy
-passlib[bcrypt]
-python-jose[cryptography]
-python-multipart
+bcrypt
+PyJWT
+pydantic[email]
 
 # --- Environment variables (.env) ---
 python-dotenv

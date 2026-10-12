@@ -21,3 +21,7 @@ env/
 cache/
 spots_cache.json
 map.html
+
+# Local database
+roam.db
+
