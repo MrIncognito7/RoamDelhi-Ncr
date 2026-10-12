@@ -1,6 +1,43 @@
 mode =  ['ai_mode','manual_mode','hybrid_mode']
 default_mode = mode[0]
 #hybrid logic later
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routers import spots
+
+app = FastAPI(title="RoamDelhiNCR API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(spots.router)
+
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 from amenity.find_cafe_restaurant import find_cafes_and_restaurants
 from utils.geocode import geocode
 place =  input("Enter the place name: ")
@@ -14,4 +51,5 @@ else:
         print(f"{place['name']} ({place['type']}): {place['road_km']} km,{place['lat']} , {place['lng']}")
 
 
+'''
 

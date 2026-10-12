@@ -24,3 +24,4 @@ for s in spots:
     ).add_to(cluster)
 
 m.save("map.html")   # double-click map.html to open it
+
