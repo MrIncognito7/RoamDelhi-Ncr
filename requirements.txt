@@ -1,0 +1,29 @@
+# --- Core API ---
+fastapi
+uvicorn
+
+# --- HTTP calls (Overpass, OSRM, Nominatim) ---
+requests
+
+# --- Fuzzy matching for /suggest autocomplete ---
+rapidfuzz
+
+# --- Geocoding (place name -> coordinates) ---
+geopy
+
+# --- Curated spots file (xlsx) ---
+pandas
+openpyxl
+
+# --- Login / auth (add once you start that part) ---
+sqlalchemy
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+
+# --- Environment variables (.env) ---
+python-dotenv
+
+# --- Testing (optional, for pytest) ---
+pytest
+httpx
