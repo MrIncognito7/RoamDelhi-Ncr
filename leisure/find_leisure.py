@@ -70,7 +70,7 @@ def find_leisure(lat, lng, radius_m):
     )
 
     print(
-        f"Overpass: {len(elements)} shopping elements "
+        f"Overpass: {len(elements)} leisure elements "
         f"in {time.time() - t:.1f}s"
     )
 

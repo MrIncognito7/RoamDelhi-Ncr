@@ -39,7 +39,7 @@ def find_cafes_and_restaurants(lat, lng, radius_m):
     places = []
     for el in elements:
         tags = el.get("tags",{})
-        print(tags.get("name"))
+        
     for el in elements:
         tags = el.get("tags", {})
         plat = el.get("lat") or el.get("center", {}).get("lat")
@@ -55,6 +55,7 @@ def find_cafes_and_restaurants(lat, lng, radius_m):
     places = [p for p in places
               if p.get("road_km") is not None and p["road_km"] <= radius_m / 1000]
     return sorted(places, key=lambda p: p["road_km"])
+
 
 
 
