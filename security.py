@@ -1,7 +1,5 @@
-"""Password hashing and JWT helpers. No FastAPI / HTTP code in here."""
 import os
 from datetime import datetime, timedelta, timezone
-
 import bcrypt
 import jwt
 from dotenv import load_dotenv
@@ -17,8 +15,6 @@ if not SECRET_KEY:
 
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_DAYS = 7
-
-
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
