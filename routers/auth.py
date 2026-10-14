@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from sendmail import send_email
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status,Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from sqlalchemy.exc import IntegrityError
@@ -9,7 +9,9 @@ import secrets
 from database import get_db
 from models import EmailOtp, User
 from security import create_token, decode_token, hash_password, verify_password
-
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(tags=["auth"])
 bearer_scheme = HTTPBearer()
 
@@ -81,26 +83,9 @@ def get_current_user(
 def generate_otp():
     return str(secrets.randbelow(1000000)).zfill(6)
 
-
-# @router.post("/send-otp")
-# def send_otp(data: sendOtpInput, db: Session = Depends(get_db)):
-#     email = data.email.lower()
-#     otp = generate_otp()
-#     expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
-#     record =  EmailOtp(email=email, otp=otp, expires_at=expires_at)
-#     db.add(record)
-#     db.commit()
-#     try:
-#         send_email(email, otp)  # Implement this function to send the OTP via email
-#     except Exception as e:
-#         db.rollback()
-#         raise HTTPException(status_code=500, detail="Failed to send OTP")
-#     return {"message": "OTP sent successfully"}
-
-
-
 @router.post("/register")
-def register(data: RegisterInput, db: Session = Depends(get_db)):
+@limiter.limit("3/minute")
+def register(data: RegisterInput,Request: Request, db: Session = Depends(get_db)):
     email = data.email.lower()
     if db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -109,6 +94,7 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
     otp_record = EmailOtp(email=email, otp=otp, expires_at=datetime.now(timezone.utc) + timedelta(minutes=5),used=False,attempts=00)
                           
     db.add(otp_record)
+    db.commit()
     try:
         send_email(email, otp)  # Implement this function to send the OTP via email
     except Exception as e:
@@ -133,7 +119,6 @@ def verify_otp(data: verifyotp, db: Session = Depends(get_db)):
     if expires_at <= datetime.now(timezone.utc):
         db.delete(otp_record)
         db.commit()
-
         raise HTTPException(
             status_code=400,
             detail="OTP has expired. Request a new one.",
