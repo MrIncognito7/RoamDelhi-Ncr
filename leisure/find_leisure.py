@@ -96,7 +96,7 @@ def find_leisure(lat, lng, radius_m):
                 "name": tags["name"],
                 "lat": plat,
                 "lng": plng,
-                "type": tags.get("shop")
+                "type": tags.get("leisure")
             })
 
     t = time.time()

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from sendmail import send_email
+from routers.sendmail import send_email
 from fastapi import APIRouter, Depends, HTTPException, status,Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, EmailStr, Field, field_validator
@@ -85,7 +85,7 @@ def generate_otp():
 
 @router.post("/register")
 @limiter.limit("3/minute")
-def register(data: RegisterInput,Request: Request, db: Session = Depends(get_db)):
+def register(data: RegisterInput,request: Request, db: Session = Depends(get_db)):
     email = data.email.lower()
     if db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
